@@ -1,7 +1,20 @@
+
 import React, { useState } from 'react'
 
-const Hero = () => {
-  const [Tasks,settasks] = useState([]);
+const Hero = ({createTask}) => {
+  const [Tasks,settasks] = useState({
+    task:""
+  });
+  const createTaskHandler = async (e)=>{
+        
+    e.preventDefault();
+    try{
+        
+        const data = await createTask(Tasks);
+    }catch(error){
+        console.log("error",error)
+    }
+};
   return (
     <div className='h-screen w-screen  flex justify-center font-Poppins '>
       <div className='flex flex-col justify-center items-center gap-5'>
@@ -9,10 +22,11 @@ const Hero = () => {
       {
         Tasks.length===0?<div className='flex justify-center items-center text-center'><h1 className="font-Poppins text-black" >All tasks are completed</h1></div>:<></>
       }
-      <input type = "text" placeholder="Enter the tasks" className="p-2 max-w-56 "></input>
+      <input type = "text" placeholder="Enter the tasks" className="p-2 max-w-56 " onChange={(e)=>{
+        settasks({task:e.target.value})}}></input>
       <div className='flex gap-5'>
         <button className='flex justify-center items-center bg-red-400 w-28 h-10'>Delete</button>
-        <button className='flex justify-center items-center bg-red-400 w-28 h-10'>Add</button>
+        <button className='flex justify-center items-center bg-red-400 w-28 h-10' onClick={createTaskHandler}>Add</button>
        </div>
       </div>
        

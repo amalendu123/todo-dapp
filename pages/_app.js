@@ -1,11 +1,11 @@
 import Navbar from "@/components/Navbar";
 import "@/styles/globals.css";
-
+import { TaskProvider } from "@/Context/task";
 export default function App({ Component, pageProps }) {
   return (
-    <>
-    <Navbar />
-    <Component {...pageProps} />
-    </>
+    <TaskProvider>
+      <Navbar />
+      <Component {...pageProps} />
+    </TaskProvider>
   );
 }
