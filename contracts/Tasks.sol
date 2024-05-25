@@ -40,24 +40,21 @@ contract Tasks {
         emit TaskCompleted(msg.sender, _taskIndex, true);
     }
 
-    function deleteCompletedTasks() public {
-        TaskList storage userTasks = taskLists[msg.sender];
-        uint256 originalLength = userTasks.tasks.length;
-
-        for (uint256 i = 0; i < userTasks.tasks.length; i++) {
-            if (userTasks.tasks[i].completed) {
-                for (uint256 j = i; j < userTasks.tasks.length - 1; j++) {
-                    userTasks.tasks[j] = userTasks.tasks[j + 1];
-                }
-                userTasks.tasks.pop();
-                i--; 
+    function deleteCompletedTasks() public  {
+    TaskList storage userTasks = taskLists[msg.sender];
+    uint256 i = 0;
+    while (i < userTasks.tasks.length) {
+        if (userTasks.tasks[i].completed) {
+            emit TaskDeleted(msg.sender, i);
+            for (uint256 j = i; j < userTasks.tasks.length - 1; j++) {
+                userTasks.tasks[j] = userTasks.tasks[j + 1];
             }
-        }
-
-        if (originalLength != userTasks.tasks.length) {
-            emit TaskDeleted(msg.sender, originalLength - userTasks.tasks.length);
+            userTasks.tasks.pop();
+        } else {
+            i++;
         }
     }
+}
 
     function getTasks() public view returns (Task[] memory) {
         return taskLists[msg.sender].tasks;
