@@ -34,8 +34,39 @@ export const TaskProvider = ({children}) =>{
         const signer = provider.getSigner();
         const contract = fetchContract(signer);
         const tasks = await contract.getTasks();
-        console.log(tasks)
-        return tasks
+        const parsedtask = tasks.map((t, i) => ({
+            task: t.description,
+            date:t.time,
+            completed:t.completed,
+            pId: i,
+        }));
+        return parsedtask
+    }
+    const markAscompleted = async(index)=>{
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        const contract = fetchContract(signer);
+        
+        try{
+            const transaction = await contract.markTaskAsCompleted(0);
+            await transaction.wait();
+            console.log("Contract call is successful",transaction);
+        }catch(error){
+            console.log(error)
+        }
+    }
+    const deletetask = async()=>{
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        const contract = fetchContract(signer);
+        
+        try{
+            const transaction = await contract.deleteCompletedTasks();
+            await transaction.wait();
+            console.log("Contract call is successful",transaction);
+        }catch(error){
+            console.log(error)
+        }
     }
     const checkIfWalletConnected = async () => {
         try {
@@ -51,7 +82,7 @@ export const TaskProvider = ({children}) =>{
             }
         } catch (error) {
             console.log("Error:", error);
-            setalert(true)
+           
         }
     }
     useEffect(() => {
@@ -67,11 +98,11 @@ export const TaskProvider = ({children}) =>{
             });
             setCurrentAccount(accounts[0])
         } catch (error) {
-            setalert(true)
+            console.log(error)
         }
     }
     return(
-        <taskContext.Provider value={{createTask,getTask,currentAccount,connectWallet,checkIfWalletConnected}}>
+        <taskContext.Provider value={{createTask,getTask,currentAccount,connectWallet,checkIfWalletConnected,markAscompleted,deletetask}}>
             {children}
         </taskContext.Provider>
     )
